@@ -3,8 +3,6 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 import post_controller
 import team_controller
 import login_controller
-from user_model import User
-from bson import ObjectId
 
 app = Flask(__name__)
 app.secret_key = 'super secret string'
@@ -37,10 +35,7 @@ def create_user():
     password = request.form['password']
     teams = request.form['teams']
     team_list = teams.split(',')
-    user = User(name=name, username=username, password=password)
-    for team in team_list:
-        user.teams.append(ObjectId(team))
-    user.save()
+    login_controller.create_user(name, username, password, team_list)
     return redirect(url_for('index'))
 
 @app.route('/login', methods=['GET','POST'])
